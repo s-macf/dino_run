@@ -20,10 +20,11 @@ class DinoGame:
             self.load_new_obstacle = False
 
     def handle_player_movement(self, actions):
-        if actions[0]:
+        print(actions)
+        if actions[1]:
             self.player.jump()
-        if actions[1] != self.prev_actions[1]:
-            if actions[1]:
+        if actions[2] != self.prev_actions[2]:
+            if actions[2]:
                 self.player.crouch()
             else:
                 self.player.stand()
@@ -47,7 +48,7 @@ class DinoGame:
                 break
 
         reward = self.score if self.player.is_dead else -10
-        state = self.get_image_array()
+        state = self.get_state()
         terminated = self.player.is_dead
         truncated = None
 
@@ -65,10 +66,16 @@ class DinoGame:
         pygame.draw.rect(screen, "black", self.ground)
         pygame.draw.rect(screen, self.player.colour, self.player.rect)
 
-    def reset():
-        pass
+    def reset(self):
+        self.objs = [pygame.FRect((500, self.screen.height - 70), (20, 40))]
+        self.load_new_obstacle = False
+        self.prev_actions = np.zeros(3)
+        self.player.reset()
+        self.score = 0
 
-    def get_image_array(self):
+        return self.get_state()
+
+    def get_state(self):
         image_array = pygame.surfarray.array3d(self.screen)
         image_array = np.transpose(image_array, (1, 0, 2))
         return image_array

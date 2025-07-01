@@ -2,7 +2,7 @@ import pygame
 
 WIDTH = 30
 HEIGHT = 30
-START_POS = (20, 0)
+START_POS = (20, 260)
 
 class Player:
     def __init__(self):
@@ -35,5 +35,7 @@ class Player:
             self.on_ground = False
             self.velocity = -350
 
-    def reset():
-        pass
+    def reset(self):
+        self.rect = pygame.FRect(START_POS, (WIDTH, HEIGHT))
+        self.on_ground = False
+        self.is_dead = False

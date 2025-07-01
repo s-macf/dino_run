@@ -16,19 +16,19 @@ class DinoGameWrapper(gym.Env):
         self.screen = pygame.display.set_mode(self.window_size) if render_mode == "human" else pygame.Surface(self.window_size)
         self.clock = pygame.Clock() if render_mode == "human" else None
 
-        # Modify observation/action/reward spaces if needed
         self.action_space = gym.spaces.Discrete(3)
         self.render_mode = render_mode
         self.game = DinoGame(self.window_size, self.screen)
 
 
-    def reset(self, **kwargs):
-        obs, info = self.env.reset(**kwargs)
-        # Modify observation if needed
-        return obs, info
+    def reset(self):
+        state = self.game.reset()
+        return state
 
-    def step(self, actions):
+    def step(self, action):
         dt = 1/60
+        actions = [0, 0, 0]
+        actions[action] = 1
         
         state, reward, terminated, truncated = self.game.update(actions, dt)
         
@@ -41,7 +41,7 @@ class DinoGameWrapper(gym.Env):
             self.clock.tick(60)
         else:
             self.game.render(self.screen)
-            image_array = self.game.get_image_array()
+            image_array = self.game.get_state()
 
             if TESTING:
                 pygame.init()
@@ -60,8 +60,14 @@ class DinoGameWrapper(gym.Env):
         
         keys = pygame.key.get_pressed()
         keys_pressed = [keys[pygame.K_w], keys[pygame.K_s], 0]
+        if keys[pygame.K_s]:
+            action = 2
+        elif keys[pygame.K_w]:
+            action = 1
+        else:
+            action = 0
 
-        return running, keys_pressed
+        return running, action
 
     def training_loop(self):
         running = True
@@ -73,6 +79,9 @@ class DinoGameWrapper(gym.Env):
             else:
                 self.render()
                 state, reward, terminated, truncated = self.step([1, 0])
+
+            if terminated or truncated:
+                    state = self.game.reset()
 
 window_size = (640, 320)
 DinoGameWrapper(env_size=window_size, render_mode="human").training_loop()
