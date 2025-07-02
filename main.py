@@ -12,6 +12,7 @@ class DinoGameWrapper(gym.Env):
 
         self.window_size = env_size
         pygame.init() if render_mode == "human" else None
+        pygame.font.init()
         pygame.display.set_caption("Dino Run") if render_mode == "human" else None
         self.screen = pygame.display.set_mode(self.window_size) if render_mode == "human" else pygame.Surface(self.window_size)
         self.clock = pygame.Clock() if render_mode == "human" else None
@@ -70,7 +71,6 @@ class DinoGameWrapper(gym.Env):
 
     def training_loop(self):
         running = True
-        scores = []
         while running:
             if self.render_mode == "human":
                 self.render()
@@ -78,13 +78,12 @@ class DinoGameWrapper(gym.Env):
                 state, reward, terminated, truncated = self.step(action)
             else:
                 self.render()
-                state, reward, terminated, truncated = self.step([1, 0])
+                state, reward, terminated, truncated = self.step(1)
 
             if terminated or truncated:
                 state = self.game.reset()
-                scores.append(reward)
-        print(max(scores))
 
 window_size = (480, 152)
 DinoGameWrapper(env_size=window_size, render_mode="human").training_loop()
+# TESTING=True
 # DinoGameWrapper(env_size=window_size).training_loop()

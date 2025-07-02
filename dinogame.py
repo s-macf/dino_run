@@ -46,7 +46,6 @@ class DinoGame:
         self.prev_actions = np.zeros(3)
         self.score = 0
         self.screen = screen
-        self.font = pygame.font.SysFont(None, 28)
 
     def add_cactus_sequence(self, sequence_length):
         rand_int = random.randint(0, 1)
@@ -132,6 +131,7 @@ class DinoGame:
     def render(self, screen):
         screen.fill("white")
         score = str(int(self.score)).zfill(5)
+        self.font = pygame.font.SysFont(None, 28)
         text = self.font.render(score, True, "black")
         screen.blit(text, (screen.width - text.width-10, 0))
 

@@ -1,11 +1,20 @@
 import pygame
 import random
+from PIL import Image
 
 RESCALE_VALUE = 0.8
 
 def load_image(file_path, scale=RESCALE_VALUE):
-    image = pygame.image.load(file_path).convert_alpha()
+    # image = pygame.image.load(file_path).convert_alpha()
+    # image = pygame.transform.scale_by(image, scale)
+
+    image = Image.open(file_path).convert('RGBA')
+    mode = image.mode
+    size = image.size
+    data = image.tobytes()
+    image = pygame.image.frombytes(data, size, mode)
     image = pygame.transform.scale_by(image, scale)
+
     return image
 
 
@@ -22,7 +31,7 @@ def load_sprite_sequence(file_path, sprite_width):
     index = 0
     while index < (sheet_width//sprite_width):
         selection = sprite_width * index
-        texture = pygame.Surface((sprite_width, sheet_height)).convert_alpha()
+        texture = pygame.Surface((sprite_width, sheet_height))
         texture.blit(sprite_sheet, (0, 0), pygame.Rect(selection, 0, sprite_width, sprite_height))
         texture.set_colorkey("black")
         sprites.append(texture)
@@ -39,7 +48,7 @@ def sample_sheet(sheet, sprite_dims, sequence_length):
     elif sequence_length == 3:
         upperbround -= 2
 
-    surface = pygame.Surface((sprite_width * sequence_length, sprite_height)).convert_alpha()
+    surface = pygame.Surface((sprite_width * sequence_length, sprite_height))
     index = 0
     while index < sequence_length:
         rand_int = random.randint(0, upperbround)
