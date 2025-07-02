@@ -59,7 +59,6 @@ class DinoGameWrapper(gym.Env):
                     running = False
         
         keys = pygame.key.get_pressed()
-        keys_pressed = [keys[pygame.K_w], keys[pygame.K_s], 0]
         if keys[pygame.K_s]:
             action = 2
         elif keys[pygame.K_w]:
@@ -71,6 +70,7 @@ class DinoGameWrapper(gym.Env):
 
     def training_loop(self):
         running = True
+        scores = []
         while running:
             if self.render_mode == "human":
                 self.render()
@@ -81,8 +81,10 @@ class DinoGameWrapper(gym.Env):
                 state, reward, terminated, truncated = self.step([1, 0])
 
             if terminated or truncated:
-                    state = self.game.reset()
+                state = self.game.reset()
+                scores.append(reward)
+        print(max(scores))
 
-window_size = (640, 320)
+window_size = (480, 152)
 DinoGameWrapper(env_size=window_size, render_mode="human").training_loop()
 # DinoGameWrapper(env_size=window_size).training_loop()
