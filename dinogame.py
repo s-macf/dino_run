@@ -19,7 +19,7 @@ class FlyingDino(Obstacle):
 
     def __init__(self, sprite, window_size):
         super().__init__(sprite, window_size)
-        random_y = random.randint(window_size[1] / 2 - self.sprite.height, window_size[1] - 60)
+        random_y = random.randrange(int(window_size[1] / 2 - self.sprite.height), int(window_size[1] - 60))
         self.rect = pygame.FRect((window_size[0], random_y), (self.sprite.width, self.sprite.height))
         self.animation_timer = 0
 
